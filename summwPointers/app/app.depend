@@ -1,0 +1,6 @@
+# depslib dependency file v1.0
+1538754950 source:/home/roland/Documents/CLibs/summwPointers/app/main.c
+	<stdio.h>
+	<stdlib.h>
+	<assert.h>
+
