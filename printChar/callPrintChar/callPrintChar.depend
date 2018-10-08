@@ -1,0 +1,4 @@
+# depslib dependency file v1.0
+1539004279 source:/home/roland/Documents/CLibs/printChar/callPrintChar/main.c
+	<dlfcn.h>
+

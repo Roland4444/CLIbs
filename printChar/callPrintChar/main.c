@@ -1,18 +1,17 @@
 #include <dlfcn.h>
-typedef int (*SimpleSumm)( int , int);
-int wSimpleSumm(int a, int b){
-    void* handle = dlopen("./libsimpleSumm.so", RTLD_NOW);
+typedef int (*printChar)(char * t);
+int wprintChar(char * inp){
+    void* handle = dlopen("./libprintChar.so", RTLD_LAZY);
     if (!handle){
         printf("\nerror opened\n");
         return -2;
     }
     printf("\nsucces open so\n");
-    SimpleSumm load = (SimpleSumm)(dlsym(handle, "simpleSumm"));
+    printChar load = (printChar)(dlsym(handle, "printChar"));
     if (!load)
     {
         printf("\nerror opened symbol\n");
         return -3;
     }
-
-    return load(a,b);
-};
+    return load(inp);
+}

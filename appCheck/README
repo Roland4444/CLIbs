@@ -9,6 +9,5 @@ WHATS DONE:
     wraoed summ to pointers to struct;
 
 Roadmap:
+    Need to result struct via input struct pointer;
 
-Everything complete;
-Need to call it from Scala;

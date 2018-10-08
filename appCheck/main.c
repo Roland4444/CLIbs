@@ -2,11 +2,40 @@
 #include <stdlib.h>
 #include <check.h>
 #include <dlfcn.h>
+struct input{
+    int a;
+    int b;
+};
+
+struct result{
+    char  t[400];
+    int result;
+};
+
+struct result summStructReturn(struct input * inp){
+    struct result rrr;
+    rrr.result = (inp -> a) + (inp -> b);
+    strcpy(rrr.t, "OK");
+    return rrr;
+};
 
 int printChar(char * t){
     printf("%s", t);
     return strlen(t);
 }
+
+START_TEST(structresultTest){
+    printf("\n\nTesting RESULT SUMM IN STRUCTURE!!!\n\n");
+    struct input a ;
+    struct input *ap = &a;
+    struct result resss;
+    a.a=12;
+    a.b=14;
+    resss = summStructReturn(ap);
+    ck_assert_int_eq(26, resss.result);
+    printf("\n%s\n", resss.t);
+}
+END_TEST
 
 START_TEST(printchar){
     char t[] = "test";
@@ -16,10 +45,6 @@ START_TEST(printchar){
 }
 END_TEST
 
-struct input{
-    int a;
-    int b;
-};
 
 int structSumm(struct input inp){
     return (inp.a) + (inp.b);
@@ -235,6 +260,32 @@ START_TEST(lets_callprintChar_test)
 }
 END_TEST
 
+
+START_TEST(lets_resinStructSumm)
+{
+
+    printf("TEST Summ in Result in StructureTEST T!!!\n");
+    typedef struct result (*summStructReturn)(struct input * inp);
+    void* handle = dlopen("./libcallSummResInStructure.so", RTLD_LAZY);
+    if (!handle){
+        printf("\nerror opened\n");
+        return -2;
+    }
+    printf("\nsucces open so\n");
+    summStructReturn load = (summStructReturn)(dlsym(handle, "summStructReturn"));
+    struct input a ;
+    struct input * ap;
+    a.a=12;
+    a.b=4;
+    ap = &a;
+    ck_assert(load);
+    ck_assert_int_eq(16, load(ap).result);
+    printf("\n\nTEXT=%s\n\n", load(ap).t);
+
+}
+END_TEST
+
+
 Suite * test(void)
 {
     Suite *s;
@@ -252,6 +303,8 @@ Suite * test(void)
     tcase_add_test(tc_core, lets_wStructPointer_test);
     tcase_add_test(tc_core, printchar);
     tcase_add_test(tc_core, lets_callprintChar_test);
+    tcase_add_test(tc_core, structresultTest);
+    tcase_add_test(tc_core, lets_resinStructSumm);
     suite_add_tcase(s, tc_core);
     return s;
 }
