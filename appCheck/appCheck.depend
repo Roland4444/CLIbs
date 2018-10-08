@@ -1,0 +1,6 @@
+# depslib dependency file v1.0
+1538988595 source:/home/roland/Documents/CLibs/wrappertoSimpleSumm/appCheck/main.c
+	<stdio.h>
+	<stdlib.h>
+	<check.h>
+
