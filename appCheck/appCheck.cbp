@@ -24,6 +24,7 @@
 		</Compiler>
 		<Unit filename="README" />
 		<Unit filename="libsimpleSumm.so" />
+		<Unit filename="libsummStruct.so" />
 		<Unit filename="libsummwPointers.so" />
 		<Unit filename="libwSimpleSumm.so" />
 		<Unit filename="libwrappedToPointers.so" />

@@ -147,6 +147,59 @@ START_TEST(lets_simpleStruct_test)
 }
 END_TEST
 
+START_TEST(lets_StructPointer_test)
+{
+    struct input{
+        int a;
+        int b;
+    };
+    printf("SUMM TEST WITH POINTER TO STRUCT!!!\n");
+    typedef int (*structSummPointer)(struct input* inp);
+    void* handle = dlopen("./libsummPointerStruct.so", RTLD_LAZY);
+    if (!handle){
+        printf("\nerror opened\n");
+        return -2;
+    }
+    printf("\nsucces open so\n");
+    structSummPointer load = (structSummPointer)(dlsym(handle, "structSummPointer"));
+
+    ck_assert(load);
+    struct input a;
+    a.a=4;
+    a.b=12;
+    struct input *pa=&a;
+    ck_assert_int_eq(16, load(pa));
+    printf("RESULT = %d\n", load(pa));
+}
+END_TEST
+
+
+START_TEST(lets_wStructPointer_test)
+{
+    struct input{
+        int a;
+        int b;
+    };
+    printf("WRAPPED SUMM TEST WITH POINTER TO STRUCT!!!\n");
+    typedef int (*wstructSummPointer)(struct input* inp);
+    void* handle = dlopen("./libwSummPointerStruct.so", RTLD_LAZY);
+    if (!handle){
+        printf("\nerror opened\n");
+        return -2;
+    }
+    printf("\nsucces open so\n");
+    wstructSummPointer load = (wstructSummPointer)(dlsym(handle, "wstructSummPointer"));
+
+    ck_assert(load);
+    struct input a;
+    a.a=4;
+    a.b=12;
+    struct input *pa=&a;
+    ck_assert_int_eq(16, load(pa));
+    printf("RESULT = %d\n", load(pa));
+}
+END_TEST
+
 Suite * test(void)
 {
     Suite *s;
@@ -160,6 +213,8 @@ Suite * test(void)
     tcase_add_test(tc_core, struct_simpletest);
     tcase_add_test(tc_core, lets_simpleStruct_test);
     tcase_add_test(tc_core, lets_check_summ_wPointer);
+    tcase_add_test(tc_core, lets_StructPointer_test);
+    tcase_add_test(tc_core, lets_wStructPointer_test);
     suite_add_tcase(s, tc_core);
     return s;
 }
