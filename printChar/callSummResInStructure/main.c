@@ -8,9 +8,9 @@ struct result{
     int result;
 };
 
-struct result summStructReturn(struct input * inp){
+struct result summStructReturn(struct input inp){
     struct result rrr;
-    rrr.result = (inp -> a) + (inp -> b);
+    rrr.result = (inp . a) + (inp . b);
     strcpy(rrr.t, "OK");
     return rrr;
 };

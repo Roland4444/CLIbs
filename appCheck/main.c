@@ -265,7 +265,7 @@ START_TEST(lets_resinStructSumm)
 {
 
     printf("TEST Summ in Result in StructureTEST T!!!\n");
-    typedef struct result (*summStructReturn)(struct input * inp);
+    typedef struct result (*summStructReturn)(struct input inp);
     void* handle = dlopen("./libcallSummResInStructure.so", RTLD_LAZY);
     if (!handle){
         printf("\nerror opened\n");
@@ -274,13 +274,11 @@ START_TEST(lets_resinStructSumm)
     printf("\nsucces open so\n");
     summStructReturn load = (summStructReturn)(dlsym(handle, "summStructReturn"));
     struct input a ;
-    struct input * ap;
     a.a=12;
     a.b=4;
-    ap = &a;
     ck_assert(load);
-    ck_assert_int_eq(16, load(ap).result);
-    printf("\n\nTEXT=%s\n\n", load(ap).t);
+    ck_assert_int_eq(16, load(a).result);
+    printf("\n\nTEXT=%s\n\n", load(a).t);
 
 }
 END_TEST
