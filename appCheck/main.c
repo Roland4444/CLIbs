@@ -2,6 +2,11 @@
 #include <stdlib.h>
 #include <check.h>
 #include <dlfcn.h>
+int printInt(int a){
+    printf("%d", a);
+    return a;
+}
+
 struct input{
     int a;
     int b;
@@ -34,6 +39,14 @@ START_TEST(structresultTest){
     resss = summStructReturn(ap);
     ck_assert_int_eq(26, resss.result);
     printf("\n%s\n", resss.t);
+}
+END_TEST
+
+START_TEST(printIntOnly){
+    printf("\n\nPRINTING SIMPLE INT  ==>!!\n\n");
+    int a = 5;
+    ck_assert_int_eq(5, printInt(a) );
+
 }
 END_TEST
 
@@ -303,6 +316,7 @@ Suite * test(void)
     tcase_add_test(tc_core, lets_callprintChar_test);
     tcase_add_test(tc_core, structresultTest);
     tcase_add_test(tc_core, lets_resinStructSumm);
+    tcase_add_test(tc_core, printIntOnly);
     suite_add_tcase(s, tc_core);
     return s;
 }
