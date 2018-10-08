@@ -3,6 +3,25 @@
 #include <check.h>
 #include <dlfcn.h>
 
+struct input{
+    int a;
+    int b;
+};
+
+int structSumm(struct input inp){
+    return (inp.a) + (inp.b);
+}
+
+START_TEST(struct_simpletest){
+    printf("SIMPLE STRUCT SUMM");
+    struct input inp;
+    inp.a=4;
+    inp.b=6;
+    ck_assert_int_eq(10, structSumm(inp));
+
+}
+END_TEST
+
 int SummwPointers(int* i1, int* i2)
 {
     return *i1 + *i2;
@@ -64,6 +83,31 @@ START_TEST(lets_summwPointers_test)
 }
 END_TEST
 
+START_TEST(lets_wrappedsummwPointers_test)
+{
+    printf("SUMM TEST WITH WRAPPED TO POINTERS STARTED!!!\n");
+    typedef int (*wswP)( int *, int *);
+    void* handle = dlopen("./libwrappedToPointers.so", RTLD_LAZY);
+    if (!handle){
+        printf("\nerror opened\n");
+        return -2;
+    }
+    printf("\nsucces open so\n");
+    wswP load = (wswP)(dlsym(handle, "wswP"));
+    if (!load)
+    {
+        printf("\nerror opened symbol\n");
+        return -3;
+    }
+    int a=3;
+    int b=3;
+    int * ap = &a;
+    int * bp = &b;
+    ck_assert_int_eq(load(ap,bp), 6 );
+    printf("RESULT = %d\n", load(ap,bp));
+}
+END_TEST
+
 
 Suite * test(void)
 {
@@ -74,6 +118,8 @@ Suite * test(void)
     tcase_add_test(tc_core, lets_simplesumm_test );
     tcase_add_test(tc_core, check_summwPointers);
     tcase_add_test(tc_core, lets_summwPointers_test);
+    tcase_add_test(tc_core, lets_wrappedsummwPointers_test);
+    tcase_add_test(tc_core, struct_simpletest);
     suite_add_tcase(s, tc_core);
     return s;
 }
