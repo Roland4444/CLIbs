@@ -3,6 +3,19 @@
 #include <check.h>
 #include <dlfcn.h>
 
+int printChar(char * t){
+    printf("%s", t);
+    return strlen(t);
+}
+
+START_TEST(printchar){
+    char t[] = "test";
+    printf("Starting test char * t   Input==>%s\n" , t );
+    printf("\n=====>>>>>%d\n", strlen(t));
+    ck_assert_int_eq(4, printChar(t));
+}
+END_TEST
+
 struct input{
     int a;
     int b;
@@ -200,6 +213,28 @@ START_TEST(lets_wStructPointer_test)
 }
 END_TEST
 
+
+START_TEST(lets_callprintChar_test)
+{
+
+    printf("PrintChar wrapped TEST T!!!\n");
+    typedef int (*wprintChar)(char * inp);
+    void* handle = dlopen("./libcallPrintChar.so", RTLD_LAZY);
+    if (!handle){
+        printf("\nerror opened\n");
+        return -2;
+    }
+    printf("\nsucces open so\n");
+    wprintChar load = (wprintChar)(dlsym(handle, "wprintChar"));
+
+    ck_assert(load);
+    char t[]="inputdata";
+    ck_assert_int_eq(9, load(t));
+    printf("\n\nLENGTHJ==%d\n\n", load(t));
+
+}
+END_TEST
+
 Suite * test(void)
 {
     Suite *s;
@@ -215,6 +250,8 @@ Suite * test(void)
     tcase_add_test(tc_core, lets_check_summ_wPointer);
     tcase_add_test(tc_core, lets_StructPointer_test);
     tcase_add_test(tc_core, lets_wStructPointer_test);
+    tcase_add_test(tc_core, printchar);
+    tcase_add_test(tc_core, lets_callprintChar_test);
     suite_add_tcase(s, tc_core);
     return s;
 }
