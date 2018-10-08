@@ -12,13 +12,26 @@ int structSumm(struct input inp){
     return (inp.a) + (inp.b);
 }
 
+int structSummPointer(struct input* inp){
+    return (inp->a) + (inp->b);
+}
+
+START_TEST(lets_check_summ_wPointer){
+    printf("STRUCT SUMM via POINTER TEST");
+    struct input a;
+    a.a=12;
+    a.b=24;
+    struct input *pa=&a;
+    ck_assert_int_eq(36, structSummPointer(pa));
+}
+END_TEST;
+
 START_TEST(struct_simpletest){
     printf("SIMPLE STRUCT SUMM");
     struct input inp;
     inp.a=4;
     inp.b=6;
     ck_assert_int_eq(10, structSumm(inp));
-
 }
 END_TEST
 
@@ -109,6 +122,31 @@ START_TEST(lets_wrappedsummwPointers_test)
 END_TEST
 
 
+START_TEST(lets_simpleStruct_test)
+{
+    struct input{
+        int a;
+        int b;
+    };
+    printf("##############3SUMM TEST WITH SIMPLE STRUCT!!!\n");
+    typedef int (*structSumm)(struct input inp);
+    void* handle = dlopen("./libsummStruct.so", RTLD_LAZY);
+    if (!handle){
+        printf("\nerror opened\n");
+        return -2;
+    }
+    printf("\nsucces open so\n");
+    structSumm load = (structSumm)(dlsym(handle, "structSumm"));
+
+    ck_assert(load);
+    struct input a;
+    a.a=4;
+    a.b=12;
+    ck_assert_int_eq(load(a), 16 );
+    printf("RESULT = %d\n", load(a));
+}
+END_TEST
+
 Suite * test(void)
 {
     Suite *s;
@@ -120,6 +158,8 @@ Suite * test(void)
     tcase_add_test(tc_core, lets_summwPointers_test);
     tcase_add_test(tc_core, lets_wrappedsummwPointers_test);
     tcase_add_test(tc_core, struct_simpletest);
+    tcase_add_test(tc_core, lets_simpleStruct_test);
+    tcase_add_test(tc_core, lets_check_summ_wPointer);
     suite_add_tcase(s, tc_core);
     return s;
 }
