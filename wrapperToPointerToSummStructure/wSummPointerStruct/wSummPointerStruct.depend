@@ -1,0 +1,4 @@
+# depslib dependency file v1.0
+1538996187 source:/home/roland/Documents/CLibs/wrapperToPointerToSummStructure/wSummPointerStruct/main.c
+	<dlfcn.h>
+

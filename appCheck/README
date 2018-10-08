@@ -1,0 +1,11 @@
+
+WHATS DONE:
+    simple summ;
+    simple summ w Pointers;
+    wrapped simple summ;
+
+Roadmap:
+    wrapped w Pointers;
+    summ with struct;
+    summ with Pointers to struct;
+    wraoed summ to pointers to struct;

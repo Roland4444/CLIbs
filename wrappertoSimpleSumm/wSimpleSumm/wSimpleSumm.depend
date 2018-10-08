@@ -1,0 +1,4 @@
+# depslib dependency file v1.0
+1538991035 source:/home/roland/Documents/CLibs/wrappertoSimpleSumm/wSimpleSumm/main.c
+	<dlfcn.h>
+

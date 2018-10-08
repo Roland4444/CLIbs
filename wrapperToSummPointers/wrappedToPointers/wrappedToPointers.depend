@@ -1,0 +1,4 @@
+# depslib dependency file v1.0
+1538991088 source:/home/roland/Documents/CLibs/wrapperToSummPointers/wrappedToPointers/main.c
+	<dlfcn.h>
+
