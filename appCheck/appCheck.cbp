@@ -22,6 +22,11 @@
 		<Compiler>
 			<Add option="-Wall" />
 		</Compiler>
+		<Unit filename="README" />
+		<Unit filename="libsimpleSumm.so" />
+		<Unit filename="libsummwPointers.so" />
+		<Unit filename="libwSimpleSumm.so" />
+		<Unit filename="libwrappedToPointers.so" />
 		<Unit filename="main.c">
 			<Option compilerVar="CC" />
 		</Unit>
