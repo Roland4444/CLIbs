@@ -2,10 +2,26 @@
 #include <stdlib.h>
 #include <check.h>
 #include <dlfcn.h>
+#define bad_item "./EE45AEAAD1A31B1B1A45F4B38C98BE62893E590A47C1166061B0B1C52163531C.wav"
+#define good_item "./web_logitech_back_65-dB.wav"
+
 int printInt(int a){
     printf("%d", a);
     return a;
 }
+
+typedef struct{
+    int major;
+    int minor;
+    int build;
+} Version;
+
+typedef struct{
+    Version version;
+    char *id;
+    void *payment;
+    int last_error;
+} Session;
 
 typedef struct {
     int result;
@@ -21,6 +37,12 @@ typedef struct {
     char  t[400];
     int result;
 } result;
+
+typedef struct {
+    bool check;
+    int proc_return;
+    int incallreturn;
+} ResultCheck;
 
 simpleResult* getSummInPointer(input* input){
     simpleResult res;
@@ -41,9 +63,33 @@ result summStructReturn(input *inp){
     return rrr;
 };
 
+
+START_TEST(loadfile_test){
+    printf("\n\nTEST Interop\n\n");
+    uint8_t *content;
+    uint64_t *content_size;
+    read_file_content(bad_item, content, content_size);
+    ck_assert_uint_eq(*content_size, 13032);
+}
+END_TEST
+
+
+START_TEST(libcv_init_and_test){
+    printf("LIBCV INIT TEST!!!");
+    Session * session = (Session*)malloc(sizeof(Session));
+    char * config = "./cv_configuration.json";
+    typedef int (*v_create_session)(struct Session*  , char *);
+    void* handle = dlopen("./libcv.so", RTLD_LAZY);
+    ck_assert(handle);
+    printf("\nsucces open so\n");
+    v_create_session load = (v_create_session)(dlsym(handle, "v_create_session"));
+    ck_assert(load);
+    ck_assert_uint_gt(load(session, config),0);
+}
+END_TEST
+
 START_TEST(io_viaStructPointersStructure){
     printf("\n\nTESTING CPP SO\n\n");
-
     typedef struct {
         uint32_t a;
         uint32_t b;
@@ -325,7 +371,23 @@ START_TEST(lets_callprintChar_test)
 END_TEST
 
 
+START_TEST(lets_printchars)
+{
+    printf("PRINT CHARS\n");
+    typedef const char* (*letsprintCharPtr)(const char *);
+    void* handle = dlopen("./libletsprintCharPtr.so", RTLD_LAZY);
+    ck_assert(handle);
+    printf("\nsucces open so\n\n\n\n");
+    letsprintCharPtr load = (letsprintCharPtr)(dlsym(handle, "letsprintCharPtr"));
+    ck_assert(load);
+    const char * text = "some text";
+    printf("OUTNEXT=>>\n\n");
+    load(text);
+    printf("\nOUT FINISHED!!\n\n");
+    printf("%s", load(text));
 
+}
+END_TEST
 
 
 Suite * test(void)
@@ -348,6 +410,9 @@ Suite * test(void)
     tcase_add_test(tc_core, structresultTest);
     tcase_add_test(tc_core, printIntOnly);
     tcase_add_test(tc_core, io_viaStructPointersStructure);
+    tcase_add_test(tc_core, lets_printchars);
+    tcase_add_test(tc_core, libcv_init_and_test);
+    tcase_add_test(tc_core, loadfile_test);
     suite_add_tcase(s, tc_core);
     return s;
 }

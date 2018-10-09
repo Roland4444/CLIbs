@@ -1,0 +1,9 @@
+# depslib dependency file v1.0
+1539093963 source:/home/roland/Documents/CPl/letsprintCharPtr/main.cpp
+	<stdlib.h>
+	<stdio.h>
+
+1539094579 source:/home/roland/Documents/CLibs/letsprintCharPtr/main.cpp
+	<stdlib.h>
+	<stdio.h>
+
