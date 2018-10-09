@@ -6,7 +6,7 @@
   },
   "duration": {
     "maximum": 35,
-    "minimum": 5,
+    "minimum": 2,
     "enable": true
   },
   "sample_rate": {

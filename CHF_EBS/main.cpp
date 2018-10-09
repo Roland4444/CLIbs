@@ -89,10 +89,10 @@ extern "C"
         printf("size = %d ",*content_size );
         if (!v_check(pointSession, direct, *content_size)){
             printf("\nFAILED!\n");
-            returned->check=false;
+            returned->check=-1;
             return returned;
         }
-        returned->check=true;
+        returned->check=0;
         returned->proc_return=sess.last_error;
         printf("error code= %d", sess.last_error);
         return returned;

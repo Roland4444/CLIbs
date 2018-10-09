@@ -2,13 +2,23 @@
 #include <stdlib.h>
 #include <check.h>
 #include <dlfcn.h>
-#define bad_item "./EE45AEAAD1A31B1B1A45F4B38C98BE62893E590A47C1166061B0B1C52163531C.wav"
-#define good_item "./web_logitech_back_65-dB.wav"
+const char * bad_item ="./EE45AEAAD1A31B1B1A45F4B38C98BE62893E590A47C1166061B0B1C52163531C.wav";
+const char * good_item ="./web_logitech_back_65-dB.wav";
+const char * config= "./cv_configuration.json";
+const char * badConfig= "./cv_configuration.json0000";
+const char * wav5= "./5.wav";
+const char * longfile = "./a2002011001_e02_16kHz.wav";
 
 int printInt(int a){
     printf("%d", a);
     return a;
 }
+
+typedef struct{
+        int check;
+        int proc_return;
+        int incallreturn;
+} ResultCheck;
 
 typedef struct{
     int major;
@@ -38,12 +48,6 @@ typedef struct {
     int result;
 } result;
 
-typedef struct {
-    bool check;
-    int proc_return;
-    int incallreturn;
-} ResultCheck;
-
 simpleResult* getSummInPointer(input* input){
     simpleResult res;
     simpleResult* pres;
@@ -64,14 +68,34 @@ result summStructReturn(input *inp){
 };
 
 
-START_TEST(loadfile_test){
+START_TEST(interop_test){
     printf("\n\nTEST Interop\n\n");
-    uint8_t *content;
-    uint64_t *content_size;
-    read_file_content(bad_item, content, content_size);
-    ck_assert_uint_eq(*content_size, 13032);
+    typedef ResultCheck* (*lets_check)(char*  , char *);
+    void* handle = dlopen("./libCHF_EBS.so", RTLD_LAZY);
+    ck_assert(handle);
+    printf("\nsucces open so\n");
+    lets_check load = (lets_check)(dlsym(handle, "lets_check"));
+    ck_assert(load);
+
+    printf("\n\nBAD ITEM MUST FAILED CHECK!!!\n\n");
+    ResultCheck* resPtr=load(config, bad_item);
+    printResult(resPtr);
+    ck_assert_uint_eq(resPtr->incallreturn,0);
+    ck_assert_uint_ne(resPtr->check,0);
+
+    printf("\n\nGOOD ITEM MUST PASSED CHECK!!!\n\n");
+    resPtr=load(config, longfile);
+    printResult(resPtr);
+    ck_assert_uint_eq(resPtr->incallreturn,0);
+    ck_assert_uint_eq(resPtr->check,0);
 }
 END_TEST
+
+void printResult(ResultCheck* ptr){
+    printf("\nCHECK=%d\n", ptr->check);
+    printf("\nIN CALL RETURN=%d\n", ptr->incallreturn);
+    printf("\nPROC RETURN=%d\n", ptr->proc_return);
+};
 
 
 START_TEST(libcv_init_and_test){
@@ -412,7 +436,7 @@ Suite * test(void)
     tcase_add_test(tc_core, io_viaStructPointersStructure);
     tcase_add_test(tc_core, lets_printchars);
     tcase_add_test(tc_core, libcv_init_and_test);
-    tcase_add_test(tc_core, loadfile_test);
+    tcase_add_test(tc_core, interop_test);
     suite_add_tcase(s, tc_core);
     return s;
 }
