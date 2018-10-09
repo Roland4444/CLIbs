@@ -7,22 +7,81 @@ int printInt(int a){
     return a;
 }
 
-struct input{
+typedef struct {
+    int result;
+    int error_code;
+} simpleResult;
+
+typedef struct {
     int a;
     int b;
-};
+} input;
 
-struct result{
+typedef struct {
     char  t[400];
     int result;
+} result;
+
+simpleResult* getSummInPointer(input* input){
+    simpleResult res;
+    simpleResult* pres;
+    res.result = (input -> a) + (input -> b);
+    res.error_code =0;
+    simpleResult *p = &res;
+    printf("\n\nRESULT=%d\n\n", p->result);
+    printf("\n\nERROR=%d\n\n", p->error_code);
+    pres = &res;
+    return pres;
 };
 
-struct result summStructReturn(struct input * inp){
-    struct result rrr;
+result summStructReturn(input *inp){
+    result rrr;
     rrr.result = (inp -> a) + (inp -> b);
     strcpy(rrr.t, "OK");
     return rrr;
 };
+
+START_TEST(io_viaStructPointersStructure){
+    printf("\n\nTESTING CPP SO\n\n");
+
+    typedef struct {
+        uint32_t a;
+        uint32_t b;
+    } inputStruct;
+
+    typedef struct{
+        uint32_t result;
+        uint32_t error;
+    } resultStruct;
+
+    typedef resultStruct* Result;
+    typedef inputStruct* Input;
+    Input input_str=(input*)malloc(sizeof(inputStruct));
+    input_str->a=4;
+    input_str->b=8;
+
+    typedef Result (*letsSumm)(Input);
+    void* handle = dlopen("./libsimpleSo.so", RTLD_LAZY);
+    if (!handle){
+        printf("\nerror opened\n");
+        return -2;
+    }
+    printf("\nsucces open so\n");
+    letsSumm load = (letsSumm)(dlsym(handle, "letsSumm"));
+    ck_assert(load);
+
+    resultStruct* r = load(input_str);
+    ck_assert_int_eq(13, r->result);
+
+
+
+
+
+}
+END_TEST
+
+
+
 
 int printChar(char * t){
     printf("%s", t);
@@ -31,9 +90,9 @@ int printChar(char * t){
 
 START_TEST(structresultTest){
     printf("\n\nTesting RESULT SUMM IN STRUCTURE!!!\n\n");
-    struct input a ;
-    struct input *ap = &a;
-    struct result resss;
+    input a ;
+    input *ap = &a;
+    result resss;
     a.a=12;
     a.b=14;
     resss = summStructReturn(ap);
@@ -59,27 +118,27 @@ START_TEST(printchar){
 END_TEST
 
 
-int structSumm(struct input inp){
+int structSumm(input inp){
     return (inp.a) + (inp.b);
 }
 
-int structSummPointer(struct input* inp){
+int structSummPointer(input* inp){
     return (inp->a) + (inp->b);
 }
 
 START_TEST(lets_check_summ_wPointer){
     printf("STRUCT SUMM via POINTER TEST");
-    struct input a;
+    input a;
     a.a=12;
     a.b=24;
-    struct input *pa=&a;
+    input *pa=&a;
     ck_assert_int_eq(36, structSummPointer(pa));
 }
 END_TEST;
 
 START_TEST(struct_simpletest){
     printf("SIMPLE STRUCT SUMM");
-    struct input inp;
+    input inp;
     inp.a=4;
     inp.b=6;
     ck_assert_int_eq(10, structSumm(inp));
@@ -274,27 +333,7 @@ START_TEST(lets_callprintChar_test)
 END_TEST
 
 
-START_TEST(lets_resinStructSumm)
-{
 
-    printf("TEST Summ in Result in StructureTEST T!!!\n");
-    typedef struct result (*summStructReturn)(struct input inp);
-    void* handle = dlopen("./libcallSummResInStructure.so", RTLD_LAZY);
-    if (!handle){
-        printf("\nerror opened\n");
-        return -2;
-    }
-    printf("\nsucces open so\n");
-    summStructReturn load = (summStructReturn)(dlsym(handle, "summStructReturn"));
-    struct input a ;
-    a.a=12;
-    a.b=4;
-    ck_assert(load);
-    ck_assert_int_eq(16, load(a).result);
-    printf("\n\nTEXT=%s\n\n", load(a).t);
-
-}
-END_TEST
 
 
 Suite * test(void)
@@ -315,8 +354,8 @@ Suite * test(void)
     tcase_add_test(tc_core, printchar);
     tcase_add_test(tc_core, lets_callprintChar_test);
     tcase_add_test(tc_core, structresultTest);
-    tcase_add_test(tc_core, lets_resinStructSumm);
     tcase_add_test(tc_core, printIntOnly);
+    tcase_add_test(tc_core, io_viaStructPointersStructure);
     suite_add_tcase(s, tc_core);
     return s;
 }
