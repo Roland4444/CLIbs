@@ -71,17 +71,9 @@ START_TEST(io_viaStructPointersStructure){
     ck_assert(load);
 
     resultStruct* r = load(input_str);
-    ck_assert_int_eq(13, r->result);
-
-
-
-
-
+    ck_assert_int_eq(12, r->result);
 }
 END_TEST
-
-
-
 
 int printChar(char * t){
     printf("%s", t);
