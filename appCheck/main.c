@@ -91,6 +91,29 @@ START_TEST(interop_test){
 }
 END_TEST
 
+START_TEST(interop_test_GBP){
+    printf("\n\nTEST Interop GBP!!!\n\n");
+    typedef ResultCheck* (*lets_check)(char*  , char *);
+    void* handle = dlopen("./libGBP_EBS.so", RTLD_LAZY);
+    ck_assert(handle);
+    printf("\nsucces open so\n");
+    lets_check load = (lets_check)(dlsym(handle, "lets_check"));
+    ck_assert(load);
+
+    printf("\n\nBAD ITEM MUST FAILED CHECK!!!\n\n");
+    ResultCheck* resPtr=load(config, bad_item);
+    printResult(resPtr);
+    ck_assert_uint_eq(resPtr->incallreturn,0);
+    ck_assert_uint_ne(resPtr->check,0);
+
+    printf("\n\nGOOD ITEM MUST PASSED CHECK!!!\n\n");
+    resPtr=load(config, longfile);
+    printResult(resPtr);
+    ck_assert_uint_eq(resPtr->incallreturn,0);
+    ck_assert_uint_eq(resPtr->check,0);
+}
+END_TEST
+
 void printResult(ResultCheck* ptr){
     printf("\nCHECK=%d\n", ptr->check);
     printf("\nIN CALL RETURN=%d\n", ptr->incallreturn);
@@ -437,6 +460,7 @@ Suite * test(void)
     tcase_add_test(tc_core, lets_printchars);
     tcase_add_test(tc_core, libcv_init_and_test);
     tcase_add_test(tc_core, interop_test);
+    tcase_add_test(tc_core, interop_test_GBP);
     suite_add_tcase(s, tc_core);
     return s;
 }
