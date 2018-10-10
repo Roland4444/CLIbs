@@ -459,8 +459,8 @@ Suite * test(void)
     tcase_add_test(tc_core, io_viaStructPointersStructure);
     tcase_add_test(tc_core, lets_printchars);
     tcase_add_test(tc_core, libcv_init_and_test);
-    tcase_add_test(tc_core, interop_test);
-    tcase_add_test(tc_core, interop_test_GBP);
+  //  tcase_add_test(tc_core, interop_test);
+  //  tcase_add_test(tc_core, interop_test_GBP);
     suite_add_tcase(s, tc_core);
     return s;
 }
