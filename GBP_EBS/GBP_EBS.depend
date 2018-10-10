@@ -1,0 +1,7 @@
+# depslib dependency file v1.0
+1539159574 source:/home/roland/Documents/CPl/GBP_EBS/main.c
+	<stdint.h>
+	<stdio.h>
+	<stdlib.h>
+	<dlfcn.h>
+

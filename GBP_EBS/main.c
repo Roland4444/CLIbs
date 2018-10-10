@@ -2,9 +2,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <dlfcn.h>
-extern "C"
-{
-    typedef struct{
+typedef struct{
         int major;
         int minor;
         int build;
@@ -27,7 +25,7 @@ extern "C"
     } ResultCheck;
 
     ResultCheck* lets_check(char * config, char * filename){
-        ResultCheck* returned=new ResultCheck;
+        ResultCheck* returned=(ResultCheck*)malloc(sizeof(ResultCheck));
         returned->incallreturn=0;
         returned->proc_return=0;
         returned->check=0;
@@ -97,8 +95,3 @@ extern "C"
         printf("error code= %d", sess.last_error);
         return returned;
     };
-
-}
-
-
-
