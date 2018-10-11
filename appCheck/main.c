@@ -15,9 +15,9 @@ int printInt(int a){
 }
 
 typedef struct{
-        int check;
-        int proc_return;
-        int incallreturn;
+        int checkResult;
+        int lastErrorInSession;
+        int ResultLoadingSoSymbols;
 } ResultCheck;
 
 typedef struct{
@@ -80,14 +80,14 @@ START_TEST(interop_test){
     printf("\n\nBAD ITEM MUST FAILED CHECK!!!\n\n");
     ResultCheck* resPtr=load(config, bad_item);
     printResult(resPtr);
-    ck_assert_uint_eq(resPtr->incallreturn,0);
-    ck_assert_uint_ne(resPtr->check,0);
+    ck_assert_uint_eq(resPtr->ResultLoadingSoSymbols,0);
+    ck_assert_uint_ne(resPtr->checkResult,0);
 
     printf("\n\nGOOD ITEM MUST PASSED CHECK!!!\n\n");
     resPtr=load(config, longfile);
     printResult(resPtr);
-    ck_assert_uint_eq(resPtr->incallreturn,0);
-    ck_assert_uint_eq(resPtr->check,0);
+    ck_assert_uint_eq(resPtr->ResultLoadingSoSymbols,0);
+    ck_assert_uint_eq(resPtr->checkResult,0);
 }
 END_TEST
 
@@ -103,21 +103,21 @@ START_TEST(interop_test_GBP){
     printf("\n\nBAD ITEM MUST FAILED CHECK!!!\n\n");
     ResultCheck* resPtr=load(config, bad_item);
     printResult(resPtr);
-    ck_assert_uint_eq(resPtr->incallreturn,0);
-    ck_assert_uint_ne(resPtr->check,0);
+    ck_assert_uint_eq(resPtr->ResultLoadingSoSymbols,0);
+    ck_assert_uint_ne(resPtr->checkResult,0);
 
     printf("\n\nGOOD ITEM MUST PASSED CHECK!!!\n\n");
     resPtr=load(config, longfile);
     printResult(resPtr);
-    ck_assert_uint_eq(resPtr->incallreturn,0);
-    ck_assert_uint_eq(resPtr->check,0);
+    ck_assert_uint_eq(resPtr->ResultLoadingSoSymbols,0);
+    ck_assert_uint_eq(resPtr->checkResult,0);
 }
 END_TEST
 
 void printResult(ResultCheck* ptr){
-    printf("\nCHECK=%d\n", ptr->check);
-    printf("\nIN CALL RETURN=%d\n", ptr->incallreturn);
-    printf("\nPROC RETURN=%d\n", ptr->proc_return);
+    printf("\nCHECK=%d\n", ptr->checkResult);
+    printf("\nIN CALL RETURN=%d\n", ptr->ResultLoadingSoSymbols);
+    printf("\nPROC RETURN=%d\n", ptr->lastErrorInSession);
 };
 
 
