@@ -103,14 +103,18 @@ START_TEST(interop_test_GBP){
     printf("\n\nBAD ITEM MUST FAILED CHECK!!!\n\n");
     ResultCheck* resPtr=load(config, bad_item);
     printResult(resPtr);
+    printf("\nLAST ERROR   %d\n", resPtr->lastErrorInSession);
+
     ck_assert_uint_eq(resPtr->ResultLoadingSoSymbols,0);
     ck_assert_uint_ne(resPtr->checkResult,0);
 
     printf("\n\nGOOD ITEM MUST PASSED CHECK!!!\n\n");
     resPtr=load(config, longfile);
     printResult(resPtr);
+    printf("\nLAST ERROR   %d\n", resPtr->lastErrorInSession);
     ck_assert_uint_eq(resPtr->ResultLoadingSoSymbols,0);
-    ck_assert_uint_eq(resPtr->checkResult,0);
+    ck_assert_uint_eq(resPtr->checkResult,-1);
+
 }
 END_TEST
 
@@ -460,7 +464,7 @@ Suite * test(void)
     tcase_add_test(tc_core, lets_printchars);
     tcase_add_test(tc_core, libcv_init_and_test);
   //  tcase_add_test(tc_core, interop_test);
-  //  tcase_add_test(tc_core, interop_test_GBP);
+    tcase_add_test(tc_core, interop_test_GBP);
     suite_add_tcase(s, tc_core);
     return s;
 }
