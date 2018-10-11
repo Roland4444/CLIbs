@@ -71,8 +71,7 @@
             returned->ResultLoadingSoSymbols=5;
             return returned;
         }
-        void * pointSession = &sess;
-        printf("size = %d ",*content_size );
+        Session * pointSession = &sess;
         if (!load(pointSession, direct, *content_size)){
             returned->checkResult=-1;
             return returned;
